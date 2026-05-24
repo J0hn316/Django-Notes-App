@@ -15,7 +15,11 @@
     <ul>
       {% for note in notes %}
       <li>
-        <h2>{{ note.title }}</h2>
+        <h2>
+          <a href="{% url 'note_detail' note.pk %}">
+            {{ note.title }}
+          </a>
+        </h2>
         <p>{{ note.content }}</p>
         <small>Created: {{ note.created_at }}</small>
       </li>
