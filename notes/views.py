@@ -16,13 +16,13 @@ def note_create(request):
         form = NoteForm(request.POST)
 
         if form.is_valid():
-            form.save()
-            return redirect("notes_home")
+            note = form.save()
+            return redirect("notes_detail", pk=note.pk)
 
     else:
         form = NoteForm()
 
-    context = {"form": form}
+    context = {"form": form, "page_title": "Create Note", "button_text": "Save Note"}
 
     return render(request, "notes/note_form.html", context)
 
@@ -33,3 +33,24 @@ def note_detail(request, pk):
     context = {"note": note}
 
     return render(request, "notes/note_detail.html", context)
+
+
+def note_update(request, pk):
+    note = get_object_or_404(Note, pk=pk)
+
+    if request.method == "POST":
+        form = NoteForm(request.POST, instance=note)
+
+        if form.is_valid():
+            form.save()
+            return redirect("note_detail", pk=note.pk)
+    else:
+        form = NoteForm(instance=note)
+
+    context = {
+        "form": form,
+        "page_title": "Edit Note",
+        "button_text": "Update Note",
+    }
+
+    return render(request, "notes/note_form.html", context)
