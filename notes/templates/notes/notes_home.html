@@ -1,33 +1,26 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "notes/base.html" %}
 
-  <head>
-    <meta charset="UTF-8">
-    <title>Django Notes App</title>
-  </head>
+{% block title %}My Notes{% endblock %}
 
-  <body>
-    <h1>My Notes</h1>
+{% block content %}
+<h2>My Notes</h2>
 
-    <a href="{% url 'note_create' %}">Create New Note</a>
+{% if notes %}
+<ul>
+  {% for note in notes %}
+  <li>
+    <h3>
+      <a href="{% url 'note_detail' note.pk %}">
+        {{ note.title }}
+      </a>
+    </h3>
 
-    {% if notes %}
-    <ul>
-      {% for note in notes %}
-      <li>
-        <h2>
-          <a href="{% url 'note_detail' note.pk %}">
-            {{ note.title }}
-          </a>
-        </h2>
-        <p>{{ note.content }}</p>
-        <small>Created: {{ note.created_at }}</small>
-      </li>
-      {% endfor %}
-    </ul>
-    {% else %}
-    <p>No notes yet.</p>
-    {% endif %}
-  </body>
-
-</html>
+    <p>{{ note.content }}</p>
+    <small class="muted">Created: {{ note.created_at }}</small>
+  </li>
+  {% endfor %}
+</ul>
+{% else %}
+<p>No notes yet.</p>
+{% endif %}
+{% endblock %}

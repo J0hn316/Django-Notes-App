@@ -1,29 +1,25 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "notes/base.html" %}
 
-  <head>
-    <meta charset="UTF-8">
-    <title>{{ note.title }}</title>
-  </head>
+{% block title %}{{ note.title }}{% endblock %}
 
-  <body>
-    <h1>{{ note.title }}</h1>
+{% block content %}
+<article class="note-card">
+  <h2>{{ note.title }}</h2>
 
-    <p>{{ note.content }}</p>
+  <p>{{ note.content }}</p>
 
-    <p>
-      <small>Created: {{ note.created_at }}</small>
-    </p>
+  <p>
+    <small class="muted">Created: {{ note.created_at }}</small>
+  </p>
 
-    <p>
-      <small>Updated: {{ note.updated_at }}</small>
-    </p>
+  <p>
+    <small class="muted">Updated: {{ note.updated_at }}</small>
+  </p>
 
+  <div class="actions">
     <a href="{% url 'note_update' note.pk %}">Edit Note</a>
-    <br>
     <a href="{% url 'note_delete' note.pk %}">Delete Note</a>
-    <br>
     <a href="{% url 'notes_home' %}">Back to Notes</a>
-  </body>
-
-</html>
+  </div>
+</article>
+{% endblock %}
