@@ -1,4 +1,5 @@
 from django.db.models import Q
+from django.core.paginator import Paginator
 from django.shortcuts import render, redirect, get_object_or_404
 
 from .models import Note
@@ -7,14 +8,18 @@ from .forms import NoteForm
 
 def notes_home(request):
     query = request.GET.get("q", "")
+    page_number = request.GET.get("page", 1)
 
     notes = Note.objects.all().order_by("-created_at")
 
     if query:
         notes = notes.filter(Q(title__icontains=query) | Q(content__icontains=query))
 
+    paginator = Paginator(notes, 5)
+    page_obj = paginator.get_page(page_number)
+
     context = {
-        "notes": notes,
+        "page_obj": page_obj,
         "query": query,
     }
 

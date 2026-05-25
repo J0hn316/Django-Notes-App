@@ -128,3 +128,23 @@ form + ul,
 form + p {
   margin-top: 1.5rem;
 }
+.pagination {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-top: 1.5rem;
+}
+
+.pagination a,
+.pagination span {
+  background: white;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  text-decoration: none;
+}
+
+.pagination span {
+  color: #374151;
+}

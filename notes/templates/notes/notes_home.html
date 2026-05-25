@@ -20,9 +20,9 @@
 <p class="muted">Showing results for: "{{ query }}"</p>
 {% endif %}
 
-{% if notes %}
+{% if page_obj %}
 <ul>
-  {% for note in notes %}
+  {% for note in page_obj %}
   <li>
     <h3>
       <a href="{% url 'note_detail' note.pk %}">
@@ -35,6 +35,22 @@
   </li>
   {% endfor %}
 </ul>
+
+<div class="pagination">
+  {% if page_obj.has_previous %}
+  <a href="?q={{ query }}&page=1">First</a>
+  <a href="?q={{ query }}&page={{ page_obj.previous_page_number }}">Previous</a>
+  {% endif %}
+
+  <span>
+    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+  </span>
+
+  {% if page_obj.has_next %}
+  <a href="?q={{ query }}&page={{ page_obj.next_page_number }}">Next</a>
+  <a href="?q={{ query }}&page={{ page_obj.paginator.num_pages }}">Last</a>
+  {% endif %}
+</div>
 {% else %}
 {% if query %}
 <p>No notes matched your search.</p>
