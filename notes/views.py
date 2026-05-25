@@ -1,4 +1,5 @@
 from django.db.models import Q
+from django.contrib import messages
 from django.core.paginator import Paginator
 from django.shortcuts import render, redirect, get_object_or_404
 
@@ -32,6 +33,7 @@ def note_create(request):
 
         if form.is_valid():
             note = form.save()
+            messages.success(request, "Note created successfully.")
             return redirect("note_detail", pk=note.pk)
 
     else:
@@ -58,6 +60,7 @@ def note_update(request, pk):
 
         if form.is_valid():
             form.save()
+            messages.success(request, "Note updated successfully.")
             return redirect("note_detail", pk=note.pk)
     else:
         form = NoteForm(instance=note)
@@ -76,6 +79,7 @@ def note_delete(request, pk):
 
     if request.method == "POST":
         note.delete()
+        messages.success(request, "Note deleted successfully.")
         return redirect("notes_home")
 
     context = {"note": note}

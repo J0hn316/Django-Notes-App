@@ -148,3 +148,39 @@ form + p {
 .pagination span {
   color: #374151;
 }
+
+.messages {
+  margin-bottom: 1.5rem;
+}
+
+.message {
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  border: 1px solid #cbd5e1;
+  background: white;
+  margin-bottom: 0.75rem;
+}
+
+.message.success {
+  background: #dcfce7;
+  border-color: #86efac;
+  color: #166534;
+}
+
+.message.error {
+  background: #fee2e2;
+  border-color: #fca5a5;
+  color: #991b1b;
+}
+
+.message.warning {
+  background: #fef3c7;
+  border-color: #fcd34d;
+  color: #92400e;
+}
+
+.message.info {
+  background: #dbeafe;
+  border-color: #93c5fd;
+  color: #1e40af;
+}
