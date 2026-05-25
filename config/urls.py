@@ -16,9 +16,16 @@ Including another URLconf
 """
 
 from django.contrib import admin
+from django.shortcuts import redirect
 from django.urls import path, include
 
+
+def home_redirect(request):
+    return redirect("notes_home")
+
+
 urlpatterns = [
+    path("", home_redirect, name="home"),
     path("admin/", admin.site.urls),
     path("notes/", include("notes.urls")),
 ]
