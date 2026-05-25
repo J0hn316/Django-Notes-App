@@ -1,87 +1,92 @@
 from django.db.models import Q
 from django.contrib import messages
-from django.core.paginator import Paginator
-from django.shortcuts import render, redirect, get_object_or_404
+from django.urls import reverse_lazy
+from django.views.generic import (
+    CreateView,
+    DeleteView,
+    DetailView,
+    ListView,
+    UpdateView,
+)
 
 from .models import Note
 from .forms import NoteForm
 
 
-def notes_home(request):
-    query = request.GET.get("q", "")
-    page_number = request.GET.get("page", 1)
+class NoteListView(ListView):
+    model = Note
+    template_name = "notes/notes_home.html"
+    context_object_name = "notes"
+    paginate_by = 5
 
-    notes = Note.objects.all().order_by("-created_at")
+    def get_queryset(self):
+        query = self.request.GET.get("q", "")
 
-    if query:
-        notes = notes.filter(Q(title__icontains=query) | Q(content__icontains=query))
+        notes = Note.objects.all().order_by("-created_at")
 
-    paginator = Paginator(notes, 5)
-    page_obj = paginator.get_page(page_number)
+        if query:
+            notes = notes.filter(
+                Q(title__icontains=query) | Q(content__icontains=query)
+            )
 
-    context = {
-        "page_obj": page_obj,
-        "query": query,
-    }
+        return notes
 
-    return render(request, "notes/notes_home.html", context)
-
-
-def note_create(request):
-    if request.method == "POST":
-        form = NoteForm(request.POST)
-
-        if form.is_valid():
-            note = form.save()
-            messages.success(request, "Note created successfully.")
-            return redirect("note_detail", pk=note.pk)
-
-    else:
-        form = NoteForm()
-
-    context = {"form": form, "page_title": "Create Note", "button_text": "Save Note"}
-
-    return render(request, "notes/note_form.html", context)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["query"] = self.request.GET.get("q", "")
+        return context
 
 
-def note_detail(request, pk):
-    note = get_object_or_404(Note, pk=pk)
-
-    context = {"note": note}
-
-    return render(request, "notes/note_detail.html", context)
+class NoteDetailView(DetailView):
+    model = Note
+    template_name = "notes/note_detail.html"
+    context_object_name = "note"
 
 
-def note_update(request, pk):
-    note = get_object_or_404(Note, pk=pk)
+class NoteCreateView(CreateView):
+    model = Note
+    form_class = NoteForm
+    template_name = "notes/note_form.html"
 
-    if request.method == "POST":
-        form = NoteForm(request.POST, instance=note)
+    def form_valid(self, form):
+        messages.success(self.request, "Note created successfully.")
+        return super().form_valid(form)
 
-        if form.is_valid():
-            form.save()
-            messages.success(request, "Note updated successfully.")
-            return redirect("note_detail", pk=note.pk)
-    else:
-        form = NoteForm(instance=note)
+    def get_success_url(self):
+        return self.object.get_absolute_url()
 
-    context = {
-        "form": form,
-        "page_title": "Edit Note",
-        "button_text": "Update Note",
-    }
-
-    return render(request, "notes/note_form.html", context)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["page_title"] = "Create Note"
+        context["button_text"] = "Save Note"
+        return context
 
 
-def note_delete(request, pk):
-    note = get_object_or_404(Note, pk=pk)
+class NoteUpdateView(UpdateView):
+    model = Note
+    form_class = NoteForm
+    template_name = "notes/note_form.html"
 
-    if request.method == "POST":
-        note.delete()
-        messages.success(request, "Note deleted successfully.")
-        return redirect("notes_home")
+    def form_valid(self, form):
+        messages.success(self.request, "Note updated successfully.")
+        return super().form_valid(form)
 
-    context = {"note": note}
+    def get_success_url(self):
+        return self.object.get_absolute_url()
 
-    return render(request, "notes/note_confirm_delete.html", context)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["page_title"] = "Edit Note"
+        context["button_text"] = "Update Note"
+        return context
+
+
+class NoteDeleteView(DeleteView):
+    model = Note
+    template_name = "notes/note_confirm_delete.html"
+    context_object_name = "note"
+    success_url = reverse_lazy("notes_home")
+
+    def form_valid(self, form):
+        messages.success(self.request, "Note deleted successfully.")
+        return super().form_valid(form)
