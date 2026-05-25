@@ -1,12 +1,22 @@
+from django.db.models import Q
 from django.shortcuts import render, redirect, get_object_or_404
+
 from .models import Note
 from .forms import NoteForm
 
 
 def notes_home(request):
+    query = request.GET.get("q", "")
+
     notes = Note.objects.all().order_by("-created_at")
 
-    context = {"notes": notes}
+    if query:
+        notes = notes.filter(Q(title__icontains=query) | Q(content__icontains=query))
+
+    context = {
+        "notes": notes,
+        "query": query,
+    }
 
     return render(request, "notes/notes_home.html", context)
 

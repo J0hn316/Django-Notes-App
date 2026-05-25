@@ -124,3 +124,7 @@ button:hover {
   color: #6b7280;
   font-size: 0.9rem;
 }
+form + ul,
+form + p {
+  margin-top: 1.5rem;
+}
