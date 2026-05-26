@@ -1,6 +1,7 @@
 from django.db.models import Q
 from django.contrib import messages
 from django.urls import reverse_lazy
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import (
     CreateView,
     DeleteView,
@@ -13,7 +14,7 @@ from .models import Note
 from .forms import NoteForm
 
 
-class NoteListView(ListView):
+class NoteListView(LoginRequiredMixin, ListView):
     model = Note
     template_name = "notes/notes_home.html"
     context_object_name = "notes"
@@ -37,13 +38,13 @@ class NoteListView(ListView):
         return context
 
 
-class NoteDetailView(DetailView):
+class NoteDetailView(LoginRequiredMixin, DetailView):
     model = Note
     template_name = "notes/note_detail.html"
     context_object_name = "note"
 
 
-class NoteCreateView(CreateView):
+class NoteCreateView(LoginRequiredMixin, CreateView):
     model = Note
     form_class = NoteForm
     template_name = "notes/note_form.html"
@@ -62,7 +63,7 @@ class NoteCreateView(CreateView):
         return context
 
 
-class NoteUpdateView(UpdateView):
+class NoteUpdateView(LoginRequiredMixin, UpdateView):
     model = Note
     form_class = NoteForm
     template_name = "notes/note_form.html"
@@ -81,7 +82,7 @@ class NoteUpdateView(UpdateView):
         return context
 
 
-class NoteDeleteView(DeleteView):
+class NoteDeleteView(LoginRequiredMixin, DeleteView):
     model = Note
     template_name = "notes/note_confirm_delete.html"
     context_object_name = "note"

@@ -27,5 +27,6 @@ def home_redirect(request):
 urlpatterns = [
     path("", home_redirect, name="home"),
     path("admin/", admin.site.urls),
+    path("account/", include("django.contrib.auth.urls")),
     path("notes/", include("notes.urls")),
 ]

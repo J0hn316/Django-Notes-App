@@ -14,9 +14,20 @@
       <h1>Django Notes App</h1>
 
       <nav>
+        {% if user.is_authenticated %}
+        <span>Logged in as {{ user.username }}</span>
+        |
         <a href="{% url 'notes_home' %}">Home</a>
         |
         <a href="{% url 'note_create' %}">Create Note</a>
+        |
+        <form class="logout-form" action="{% url 'logout' %}" method="post">
+          {% csrf_token %}
+          <button type="submit">Logout</button>
+        </form>
+        {% else %}
+        <a href="{% url 'login' %}">Login</a>
+        {% endif %}
       </nav>
     </header>
 

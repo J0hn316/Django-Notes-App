@@ -184,3 +184,24 @@ form + p {
   border-color: #93c5fd;
   color: #1e40af;
 }
+
+.logout-form {
+  display: inline;
+  background: transparent;
+  padding: 0;
+  border: none;
+}
+
+.logout-form button {
+  background: transparent;
+  color: #dbeafe;
+  padding: 0;
+  border: none;
+  font: inherit;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.logout-form button:hover {
+  text-decoration: underline;
+}
