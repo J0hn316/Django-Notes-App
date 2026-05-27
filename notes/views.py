@@ -23,7 +23,7 @@ class NoteListView(LoginRequiredMixin, ListView):
     def get_queryset(self):
         query = self.request.GET.get("q", "")
 
-        notes = Note.objects.all().order_by("-created_at")
+        notes = Note.objects.filter(user=self.request.user).order_by("-created_at")
 
         if query:
             notes = notes.filter(
@@ -43,6 +43,9 @@ class NoteDetailView(LoginRequiredMixin, DetailView):
     template_name = "notes/note_detail.html"
     context_object_name = "note"
 
+    def get_queryset(self):
+        return Note.objects.filter(user=self.request.user)
+
 
 class NoteCreateView(LoginRequiredMixin, CreateView):
     model = Note
@@ -50,6 +53,7 @@ class NoteCreateView(LoginRequiredMixin, CreateView):
     template_name = "notes/note_form.html"
 
     def form_valid(self, form):
+        form.instance.user = self.request.user
         messages.success(self.request, "Note created successfully.")
         return super().form_valid(form)
 
@@ -67,6 +71,9 @@ class NoteUpdateView(LoginRequiredMixin, UpdateView):
     model = Note
     form_class = NoteForm
     template_name = "notes/note_form.html"
+
+    def get_queryset(self):
+        return Note.objects.filter(user=self.request.user)
 
     def form_valid(self, form):
         messages.success(self.request, "Note updated successfully.")
@@ -87,6 +94,9 @@ class NoteDeleteView(LoginRequiredMixin, DeleteView):
     template_name = "notes/note_confirm_delete.html"
     context_object_name = "note"
     success_url = reverse_lazy("notes_home")
+
+    def get_queryset(self):
+        return Note.objects.filter(user=self.request.user)
 
     def form_valid(self, form):
         messages.success(self.request, "Note deleted successfully.")
